@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function index(){
+        $players = User::All();
+        return view('players.index', compact('players'));
+
+    }
     public function register(Request $request){
         $request->validate(
             [
@@ -42,10 +47,12 @@ class UserController extends Controller
                 'message'=>'Los datos introducidos no son correctos'
             ]);
         }
+        
         $token=$user->createToken('auth_token')->accessToken;
 
         return response([
-            'token'=> $token
+            'token'=> $token,
+            'message'=>'Estás en sesión'
         ]);
     }
     public function logout(Request $request){
