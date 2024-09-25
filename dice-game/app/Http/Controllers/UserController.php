@@ -7,11 +7,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index(){
-        $players = User::All();
-        return view('players.index', compact('players'));
-
-    }
+    
     public function register(Request $request){
         $request->validate(
             [
@@ -61,6 +57,18 @@ class UserController extends Controller
         return response([
             'message'=>'La salido de la sesión con exito'
         ]);
+    }
+    public function DisplayAllPlayers(Request $request)
+    {
+        
+        if ($request->user()->hasRole('admin')) {
+            $users = User::all();
+            return response()->json($users);
+        } else {
+            return response()->json([
+                'message' => 'No tienes permiso para acceder a esta información.'
+            ], 403);
+        }
     }
 
 }
