@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GameController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -9,17 +10,25 @@ use Illuminate\Support\Facades\Route;
 })->middleware('auth:sanctum');*/
 //crear jugador
 Route::post('/register',[UserController::class, 'register']);
+//loguearse
 Route::post('/login',[UserController::class, 'login']);
+//Salir
 Route::post('/logout',[UserController::class, 'logout']);
 
-Route::group(['middleware' => 'auth:api'], function (){
+//Route::get('/players',[UserController::class, 'DisplayAllPlayers']);
+
+
+Route::group(['middleware' => 'auth:api', 'role:admin'], function (){
     //mostramos todos los jugadores
     Route::get('/players',[UserController::class, 'DisplayAllPlayers']);
     //mostrar un jugador
-    Route::get('/players{id}',[UserController::class, 'DisplayPlayer']);
+    Route::get('/players/{id}',[UserController::class, 'DisplayPlayer']);
     //Editar jugado
-    Route::put('/players{id}',[UserController::class, 'UpdatePlayer']);
+    Route::put('/players/{id}',[UserController::class, 'UpdatePlayer']);
     //Eliminar Jugador
-    Route::delete('/players{id}',[UserController::class, 'DeletePlayer']);
+    Route::delete('/players/{id}',[UserController::class, 'DeletePlayer']);
 });
+// Rutas para gestionar los juegos
+Route::post('/players/{id}/games', [GameController::class, 'createGame']); 
+Route::delete('/players/{id}/games', [GameController::class, 'destroy']); 
 

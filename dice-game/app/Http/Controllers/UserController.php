@@ -26,7 +26,8 @@ class UserController extends Controller
         $token=$user->createToken('auth_token')->accessToken;
 
         return response([
-            'token'=> $token
+            'token'=> $token,
+            'message'=>'Acabas de registrarte!!!',
         ]);
     }
     public function login(Request $request){
@@ -60,7 +61,8 @@ class UserController extends Controller
     }
     public function DisplayAllPlayers(Request $request)
     {
-        
+        /*$roles = $request->user()->getRoleNames();
+        return response()->json($roles);*/
         if ($request->user()->hasRole('admin')) {
             $users = User::all();
             return response()->json($users);
@@ -70,5 +72,29 @@ class UserController extends Controller
             ], 403);
         }
     }
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|unique:players',
+            'nickname' => 'nullable|string',
+        ]);
+
+        $player = User::create([
+            'email' => $validated['email'],
+            'nickname' => $validated['nickname'] ?? 'Anònim',
+            'registered_at' => now(),
+        ]);
+
+        return response()->json($player, 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $player = User::findOrFail($id);
+        $player->update($request->only('nickname'));
+
+        return response()->json($player);
+    }
+
 
 }
