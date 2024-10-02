@@ -13,11 +13,14 @@ Route::post('/register',[UserController::class, 'register']);
 //loguearse
 Route::post('/login',[UserController::class, 'login']);
 //Salir
-Route::post('/logout',[UserController::class, 'logout']);
-
-//Route::get('/players',[UserController::class, 'DisplayAllPlayers']);
 
 
+Route::middleware('auth:api')->group(function() {
+    Route::post('/logout',[UserController::class, 'logout']);
+    Route::post('/players/{id}/games', [GameController::class, 'createGame']); 
+    Route::delete('/players/{id}/games', [GameController::class, 'destroy']); 
+
+});
 Route::group(['middleware' => 'auth:api', 'role:admin'], function (){
     //mostramos todos los jugadores
     Route::get('/players',[UserController::class, 'DisplayAllPlayers']);
@@ -27,8 +30,7 @@ Route::group(['middleware' => 'auth:api', 'role:admin'], function (){
     Route::put('/players/{id}',[UserController::class, 'UpdatePlayer']);
     //Eliminar Jugador
     Route::delete('/players/{id}',[UserController::class, 'DeletePlayer']);
-});
-// Rutas para gestionar los juegos
-Route::post('/players/{id}/games', [GameController::class, 'createGame']); 
-Route::delete('/players/{id}/games', [GameController::class, 'destroy']); 
 
+// Rutas para gestionar los juegos
+
+});

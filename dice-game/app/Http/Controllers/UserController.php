@@ -63,7 +63,8 @@ class UserController extends Controller
     {
         /*$roles = $request->user()->getRoleNames();
         return response()->json($roles);*/
-        if ($request->user()->hasRole('admin')) {
+     
+       if ($request->user()->hasRole('admin')) {
             $users = User::all();
             return response()->json($users);
         } else {
